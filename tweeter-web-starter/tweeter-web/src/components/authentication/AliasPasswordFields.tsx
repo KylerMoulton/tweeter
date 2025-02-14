@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 interface Props {
+  //remove alias, password
   alias: string;
   setAlias: (value: string) => void;
   password: string;
