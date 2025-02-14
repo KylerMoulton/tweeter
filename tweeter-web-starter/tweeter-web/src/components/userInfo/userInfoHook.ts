@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { UserInfoContext } from "./UserInfoProvider";
 
-const useUser = () => useContext(UserInfoContext);
+const useUserInfo = () => useContext(UserInfoContext);
 
-export default useUser;
+export default useUserInfo;
