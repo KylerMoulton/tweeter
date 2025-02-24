@@ -71,9 +71,7 @@ const Login = (props: Props) => {
   const inputFieldGenerator = () => {
     return (
       <AliasPasswordFields
-      alias={alias}
       setAlias={setAlias}
-      password={password}
       setPassword={setPassword}
       keyDownFunction={loginOnEnter}
     />

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 interface Props {
   setAlias: (value: string) => void;
   setPassword: (value: string) => void;

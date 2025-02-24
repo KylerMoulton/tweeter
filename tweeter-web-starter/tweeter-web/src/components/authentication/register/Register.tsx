@@ -156,9 +156,7 @@ const Register = () => {
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
         <AliasPasswordFields
-          alias={alias}
           setAlias={setAlias}
-          password={password}
           setPassword={setPassword}
           keyDownFunction={registerOnEnter}
         />
