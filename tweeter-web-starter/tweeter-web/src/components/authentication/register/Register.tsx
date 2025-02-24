@@ -30,15 +30,6 @@ const Register = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const listener: RegisterView = {
-    firstName,
-    lastName,
-    alias,
-    password,
-    imageBytes,
-    imageUrl,
-    imageFileExtension,
-    rememberMe,
-    isLoading,
     setIsLoading,
     updateUserInfo,
     navigate,
@@ -51,20 +42,11 @@ const Register = (props: Props) => {
   const [presenter] = useState(props.presenterGenerator(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
-    return (
-      !firstName ||
-      !lastName ||
-      !alias ||
-      !password ||
-      !imageUrl ||
-      !imageFileExtension
-    );
+    return presenter.checkSubmitButtonStatus(alias, firstName, lastName, password, imageUrl, imageFileExtension)
   };
 
   const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
-      doRegister();
-    }
+    presenter.registerOnEnter(event, alias, firstName, lastName, password, imageUrl,imageBytes, imageFileExtension, rememberMe);
   };
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +54,7 @@ const Register = (props: Props) => {
   };
 
   const doRegister = async () => {
-    presenter.doRegister();
+    presenter.doRegister(alias, firstName, lastName, password,imageBytes, imageFileExtension, rememberMe);
   };
 
   const inputFieldGenerator = () => {

@@ -24,11 +24,6 @@ const Login = (props: Props) => {
   const { displayErrorMessage } = useToastListener();
 
   const listener: LoginView = {
-    alias,
-    password,
-    rememberMe,
-    originalUrl: props.originalUrl,
-    isLoading,
     setIsLoading,
     updateUserInfo,
     navigate,
@@ -38,17 +33,15 @@ const Login = (props: Props) => {
   const [presenter] = useState(props.presenterGenerator(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
-    return !alias || !password;
+    return presenter.checkSubmitButtonStatus(alias, password)
   };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !checkSubmitButtonStatus()) {
-      doLogin();
-    }
+    presenter.loginOnEnter(event, alias, password, rememberMe, props.originalUrl)
   };
 
   const doLogin = async () => {
-    presenter.doLogin();
+    presenter.doLogin(alias, password, rememberMe, props.originalUrl);
   };
 
   const inputFieldGenerator = () => {

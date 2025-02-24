@@ -4,15 +4,6 @@ import { UserService } from "../model/service/UserService";
 import { User, AuthToken } from "tweeter-shared";
 
 export interface RegisterView {
-alias: string;
-firstName: string;
-lastName: string;
-password: string;
-imageBytes: Uint8Array<ArrayBufferLike>
-imageUrl: string
-imageFileExtension: string
-rememberMe: boolean;
-isLoading: boolean;
 setIsLoading: (isLoading: boolean) => void;
 updateUserInfo: (currentUser: User, displayedUser: User | null, authToken: AuthToken, remember: boolean) => void;
 navigate: (url: string) => void;
@@ -31,6 +22,22 @@ export class RegisterPresenter {
     this.view = view;
   }
 
+  public checkSubmitButtonStatus = (alias: string, firstName: string, lastName: string, password: string, imageUrl: string, imageFileExtension: string): boolean => {
+    return (
+      !firstName ||
+      !lastName ||
+      !alias ||
+      !password ||
+      !imageUrl ||
+      !imageFileExtension
+    );
+  };
+
+  public registerOnEnter = (event: React.KeyboardEvent<HTMLElement>, alias: string, firstName: string, lastName: string, password: string, imageUrl: string, imageBytes: Uint8Array<ArrayBufferLike>, imageFileExtension: string, rememberMe: boolean) => {
+    if (event.key == "Enter" && !this.checkSubmitButtonStatus(alias, firstName, lastName, password, imageUrl, imageFileExtension)) {
+      this.doRegister(alias, firstName, lastName, password, imageBytes, imageFileExtension, rememberMe);
+    }
+  };
   public handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0];
       this.handleImageFile(file);
@@ -72,20 +79,20 @@ export class RegisterPresenter {
     return file.name.split(".").pop();
   };
 
-  public doRegister = async () => {
+  public doRegister = async (alias: string, firstName: string, lastName: string, password: string, imageBytes: Uint8Array<ArrayBufferLike>, imageFileExtension: string, rememberMe: boolean) => {
     try {
       this.view.setIsLoading(true);
 
       const [user, authToken] = await this.userService.register(
-        this.view.firstName,
-        this.view.lastName,
-        this.view.alias,
-        this.view.password,
-        this.view.imageBytes,
-        this.view.imageFileExtension
+        firstName,
+        lastName,
+        alias,
+        password,
+        imageBytes,
+        imageFileExtension
       );
 
-      this.view.updateUserInfo(user, user, authToken, this.view.rememberMe);
+      this.view.updateUserInfo(user, user, authToken, rememberMe);
       this.view.navigate("/");
     } catch (error) {
       this.view.displayErrorMessage(
