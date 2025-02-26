@@ -3,8 +3,13 @@ import { useState } from "react";
 import { AuthToken, Status } from "tweeter-shared";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/userInfoHook";
+import { PostStatusPresenter, PostStatusView } from "../../presenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenterGenerator: (view: PostStatusView) => PostStatusPresenter;
+}
+
+const PostStatus = (props: Props) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -12,46 +17,30 @@ const PostStatus = () => {
   const [post, setPost] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const submitPost = async (event: React.MouseEvent) => {
-    event.preventDefault();
 
-    try {
-      setIsLoading(true);
-      displayInfoMessage("Posting status...", 0);
-
-      const status = new Status(post, currentUser!, Date.now());
-
-      await postStatus(authToken!, status);
-
-      setPost("");
-      displayInfoMessage("Status posted!", 2000);
-    } catch (error) {
-      displayErrorMessage(
-        `Failed to post the status because of exception: ${error}`
-      );
-    } finally {
-      clearLastInfoMessage();
-      setIsLoading(false);
-    }
+  const listener: PostStatusView = {
+    setIsLoading,
+    displayInfoMessage,
+    displayErrorMessage,
+    clearLastInfoMessage,
+    getCurrentUser: () => currentUser,
+    getAuthToken: () => authToken,
+    setPost
   };
+  
 
-  const postStatus = async (
-    authToken: AuthToken,
-    newStatus: Status
-  ): Promise<void> => {
-    // Pause so we can see the logging out message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
+  const [presenter] = useState(props.presenterGenerator(listener));
 
-    // TODO: Call the server to post the status
+  const submitPost = async (event: React.MouseEvent) => {
+    presenter.submitPost(event,post);
   };
 
   const clearPost = (event: React.MouseEvent) => {
-    event.preventDefault();
-    setPost("");
+    presenter.clearPost(event)
   };
 
   const checkButtonStatus: () => boolean = () => {
-    return !post.trim() || !authToken || !currentUser;
+    return presenter.checkButtonStatus();
   };
 
   return (
