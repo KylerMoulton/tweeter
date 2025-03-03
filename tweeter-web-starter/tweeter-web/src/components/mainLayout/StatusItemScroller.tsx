@@ -11,13 +11,12 @@ interface Props {
 }
 
 const StatusItemScroller = (props: Props) => {
-  const { displayErrorMessage } = useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
   const [items, setItems] = useState<Status[]>([]);
   const [newItems, setNewItems] = useState<Status[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
 
-  const { displayedUser } =
-  useUserInfo();
+  const { displayedUser, authToken } = useUserInfo();
 
   // Initialize the component whenever the displayed user changes
   useEffect(() => {
@@ -48,13 +47,15 @@ const StatusItemScroller = (props: Props) => {
   const listener: StatusItemView = {
     addItems: (newItems: Status[]) =>
       setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage
+    displayErrorMessage: displayErrorMessage,
+    clearLastInfoMessage: clearLastInfoMessage,
+    displayInfoMessage: displayInfoMessage
   }
 
   const [presenter] = useState(props.presenterGenerator(listener));
 
   const loadMoreItems = async () => {
-    presenter.loadMoreItems()
+    presenter.loadMoreItems(authToken!, displayedUser!.alias)
     setChangedDisplayedUser(false)
   };
 

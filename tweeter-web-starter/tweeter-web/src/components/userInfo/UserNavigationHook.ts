@@ -1,4 +1,5 @@
-import { UserNavigationPresenter, UserNavigationView } from "../../presenters/UserNavigationPresenter";
+import { NavHookView } from "../../presenters/Presenter";
+import { UserNavigationPresenter } from "../../presenters/UserNavigationPresenter";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "./userInfoHook";
 
@@ -12,9 +13,9 @@ const useUserNavigation = (): UseUserNavigation => {
   const { setDisplayedUser, currentUser, authToken } =
     useUserInfo();
 
-  const listener: UserNavigationView = {
+  const listener: NavHookView = {
     setDisplayedUser,
-    displayErrorMessage
+    displayErrorMessage,
   }
 
   const presenter = new UserNavigationPresenter(listener)

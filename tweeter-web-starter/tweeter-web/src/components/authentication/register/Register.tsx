@@ -25,13 +25,15 @@ const Register = (props: Props) => {
 
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
-  const { displayErrorMessage } = useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
 
   const listener: RegisterView = {
     setIsLoading,
     updateUserInfo,
     navigate,
     displayErrorMessage,
+    displayInfoMessage,
+    clearLastInfoMessage,
     setImageBytes,
     setImageUrl,
     setImageFileExtension
