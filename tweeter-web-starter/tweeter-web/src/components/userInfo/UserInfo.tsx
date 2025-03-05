@@ -38,9 +38,6 @@ const UserInfo = (props: Props) => {
     setFollowerCount: setFollowerCount,
     setIsLoading: setIsLoading,
     setDisplayedUser: setDisplayedUser,
-    getAuthToken: () => authToken,
-    getCurrentUser: () => currentUser,
-    getDisplayedUser: () => displayedUser,
     displayErrorMessage: displayErrorMessage,
     displayInfoMessage: displayInfoMessage,
     clearLastInfoMessage: clearLastInfoMessage,
@@ -71,19 +68,19 @@ const UserInfo = (props: Props) => {
   };
 
   const switchToLoggedInUser = (event: React.MouseEvent): void => {
-    presenter.switchToLoggedInUser(event)
+    presenter.switchToLoggedInUser(event, currentUser!)
   };
 
   const followDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
-    presenter.followDisplayedUser(event);
+    presenter.followDisplayedUser(event, displayedUser!, authToken!);
   };
 
   const unfollowDisplayedUser = async (
     event: React.MouseEvent
   ): Promise<void> => {
-    presenter.unfollowDisplayedUser(event);
+    presenter.unfollowDisplayedUser(event, displayedUser!, authToken!);
   };
 
   return (

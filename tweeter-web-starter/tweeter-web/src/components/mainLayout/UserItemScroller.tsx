@@ -11,7 +11,7 @@ interface Props {
 }
 
 const UserItemScroller = (props: Props) => {
-  const { displayErrorMessage } = useToastListener();
+  const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } = useToastListener();
   const [items, setItems] = useState<User[]>([]);
   const [newItems, setNewItems] = useState<User[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
@@ -48,7 +48,9 @@ const UserItemScroller = (props: Props) => {
   const listener: UserItemView = {
     addItems: (newItems: User[]) =>
       setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage
+    displayErrorMessage: displayErrorMessage,
+    clearLastInfoMessage: clearLastInfoMessage,
+    displayInfoMessage: displayInfoMessage
   }
 
   const [presenter] = useState(props.presenterGenerator(listener))
