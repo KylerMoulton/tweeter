@@ -40,13 +40,12 @@ export abstract class AuthenticationPresenter<V extends AuthenticationView> exte
     rememberMe: boolean,
     redirectUrl: string = "/"
   ) {
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
       const [user, authToken] = await authFunction();
       this.view.updateUserInfo(user, user, authToken, rememberMe);
       this.view.navigate(redirectUrl);
-    }, operationDescription, () => {
-      this.view.setIsLoading(false);
-    });
+    }, operationDescription);
+    this.view.setIsLoading(false);
   }
 }
