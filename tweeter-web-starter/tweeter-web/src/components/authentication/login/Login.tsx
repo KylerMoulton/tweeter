@@ -36,7 +36,7 @@ const Login = (props: Props) => {
   const [presenter] = useState(props.presenterGenerator(listener));
 
   const checkSubmitButtonStatus = (): boolean => {
-    return presenter.checkSubmitButtonStatus(alias, password)
+    return (!alias || !password)
   };
 
   const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {

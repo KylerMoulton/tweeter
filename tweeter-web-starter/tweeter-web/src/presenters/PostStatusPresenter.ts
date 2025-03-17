@@ -39,8 +39,4 @@ export class PostStatusPresenter extends Presenter<PostStatusView>{
     event.preventDefault();
     this.view.setPost("");
   };
-
-  public checkButtonStatus = (authToken: AuthToken, currentUser: User): boolean => {
-    return !authToken || !currentUser;
-  };
 }
