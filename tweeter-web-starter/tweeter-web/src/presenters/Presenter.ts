@@ -32,17 +32,13 @@ export class Presenter<V extends View> {
 		return this._view;
 	}
 
-  public async doFailureReportingOperation<T extends View>(this: Presenter<T>,operation: () => Promise<void>,operationDescription: string, finallyCallback?: () => void){
+  public async doFailureReportingOperation<T extends View>(this: Presenter<T>,operation: () => Promise<void>,operationDescription: string){
     try {
       await operation();
     } catch (error) {
       this.view.displayErrorMessage(
-        `Failed to ${operationDescription} because of exception: ${error}`
+        `Failed to ${operationDescription} because of exception: ${(error as Error).message}`
       );
-    } finally {
-      if (finallyCallback) {
-        finallyCallback();
-      }
     }
   };
 }

@@ -7,16 +7,20 @@ export interface PostStatusView extends AuthStateView{
 }
 
 export class PostStatusPresenter extends Presenter<PostStatusView>{
-  private statusService: StatusService;
+  private _statusService: StatusService;
 
   public constructor(view: PostStatusView) {
     super(view)
-    this.statusService = new StatusService();
+    this._statusService = new StatusService();
+  }
+
+  public get statusService() {
+    return this._statusService;
   }
 
   public submitPost = async (event: React.MouseEvent, post: string, currentUser: User, authToken: AuthToken) => {
     event.preventDefault();
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage("Posting status...", 0);
       if (!currentUser || !authToken) {
@@ -26,18 +30,13 @@ export class PostStatusPresenter extends Presenter<PostStatusView>{
       await this.statusService.postStatus(authToken, status);
       this.view.setPost("");
       this.view.displayInfoMessage("Status posted!", 2000);
-    }, "post the status", () => {
-      this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
-    });
+    }, "post the status" );
+    this.view.clearLastInfoMessage();
+    this.view.setIsLoading(false);
   };
 
   public clearPost = (event: React.MouseEvent) => {
     event.preventDefault();
     this.view.setPost("");
-  };
-
-  public checkButtonStatus = (authToken: AuthToken, currentUser: User): boolean => {
-    return !authToken || !currentUser;
   };
 }

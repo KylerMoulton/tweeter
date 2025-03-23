@@ -17,7 +17,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView>{
   }
 
   public setIsFollowerStatus = async (authToken: AuthToken, currentUser: User, displayedUser: User) => {
-      this.doFailureReportingOperation(async () => {
+      await this.doFailureReportingOperation(async () => {
         if (currentUser === displayedUser) {
           this.view.setIsFollower(false);
         } else {
@@ -29,13 +29,13 @@ export class UserInfoPresenter extends Presenter<UserInfoView>{
     };
 
   public setNumbFollowees = async (authToken: AuthToken, displayedUser: User) => {
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setFolloweeCount(await this.userService.getFolloweeCount(authToken, displayedUser));
     }, "get followees count");
   };
 
   public setNumbFollowers = async (authToken: AuthToken, displayedUser: User) => {
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setFollowerCount(await this.userService.getFollowerCount(authToken, displayedUser));
     }, "get followers count");
   };
@@ -47,7 +47,7 @@ export class UserInfoPresenter extends Presenter<UserInfoView>{
 
   public followDisplayedUser = async (event: React.MouseEvent, displayedUser: User, authToken: AuthToken): Promise<void> => {
     event.preventDefault();
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage(`Following ${displayedUser.name}...`, 0);
 
@@ -59,15 +59,14 @@ export class UserInfoPresenter extends Presenter<UserInfoView>{
       this.view.setIsFollower(true);
       this.view.setFollowerCount(followerCount);
       this.view.setFolloweeCount(followeeCount);
-    }, "follow user", () => {
-      this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
-    });
+    }, "follow user");
+    this.view.clearLastInfoMessage();
+    this.view.setIsLoading(false);
   };
 
   public unfollowDisplayedUser = async (event: React.MouseEvent, displayedUser: User, authToken: AuthToken): Promise<void> => {
     event.preventDefault();
-    this.doFailureReportingOperation(async () => {
+    await this.doFailureReportingOperation(async () => {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage(
         `Unfollowing ${displayedUser.name}...`,
@@ -82,9 +81,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView>{
       this.view.setIsFollower(false);
       this.view.setFollowerCount(followerCount);
       this.view.setFolloweeCount(followeeCount);
-    }, "unfollow user", () => {
-      this.view.clearLastInfoMessage();
-      this.view.setIsLoading(false);
-    });
+    }, "unfollow user");
+    this.view.clearLastInfoMessage();
+    this.view.setIsLoading(false);
   };
 }

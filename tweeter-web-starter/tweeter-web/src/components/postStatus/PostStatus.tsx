@@ -36,8 +36,8 @@ const PostStatus = (props: Props) => {
     presenter.clearPost(event)
   };
 
-  const checkButtonStatus: () => boolean = () => {
-    return presenter.checkButtonStatus(authToken!, currentUser!);
+  const checkButtonStatus = (): boolean => {
+    return (!authToken || !currentUser) || !post;
   };
 
   return (
@@ -49,6 +49,7 @@ const PostStatus = (props: Props) => {
             id="postStatusTextArea"
             rows={10}
             placeholder="What's on your mind?"
+            aria-label="statusField"
             value={post}
             onChange={(event) => {
               setPost(event.target.value);
