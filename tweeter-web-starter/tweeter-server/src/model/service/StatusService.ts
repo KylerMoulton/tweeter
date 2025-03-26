@@ -11,10 +11,10 @@ export class StatusService {
 
   public async loadMoreStoryItems (
     pageSize: number,
-    lastItem: Status | null
-  ): Promise<[Status[], boolean]> {
+    lastItem: StatusDto | null
+  ): Promise<[StatusDto[], boolean]> {
     // TODO: Replace with the result of calling server
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    return this.getFakeData(lastItem, pageSize);
   };
 
   public async postStatus (
