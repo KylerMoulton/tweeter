@@ -9,12 +9,14 @@ export class StatusService {
   }
   
   public async loadMoreFeedItems (
+    authToken: AuthToken,
+    userAlias: string,
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
     const request: PagedStatusItemRequest ={
-        token: "",
-        userAlias: "",
+        token: authToken.token,
+        userAlias: userAlias,
         pageSize: pageSize,
         lastItem: lastItem ? lastItem.dto : null
     }
@@ -22,12 +24,14 @@ export class StatusService {
   };
 
   public async loadMoreStoryItems (
+    authToken: AuthToken,
+    userAlias: string,
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
     const request: PagedStatusItemRequest ={
-        token: "",
-        userAlias: "",
+        token: authToken.token,
+        userAlias: userAlias,
         pageSize: pageSize,
         lastItem: lastItem ? lastItem.dto : null
     }

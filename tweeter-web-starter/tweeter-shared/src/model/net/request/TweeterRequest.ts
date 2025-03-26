@@ -1,4 +1,7 @@
 export interface TweeterRequest {
   readonly token: string;
-  readonly userAlias: string;
+}
+
+export interface TweeterUserAliasRequest extends TweeterRequest{
+    readonly userAlias: string;
 }

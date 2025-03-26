@@ -2,6 +2,8 @@ import { Status, FakeData, AuthToken, StatusDto } from "tweeter-shared";
 
 export class StatusService {
   public async loadMoreFeedItems (
+    token: string,
+    userAlias: string,
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
@@ -10,6 +12,8 @@ export class StatusService {
   };
 
   public async loadMoreStoryItems (
+    token: string,
+    userAlias: string,
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
