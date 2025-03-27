@@ -1,4 +1,6 @@
 import {
+    GetIsFollowerStatusRequest,
+    GetIsFollowerStatusResponse,
     PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
@@ -134,6 +136,27 @@ export class ServerFacade {
     >(request, "/post");
 
     if (!response.success) {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async getIsFollowerStatus(
+    request: GetIsFollowerStatusRequest
+  ): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost< 
+      GetIsFollowerStatusRequest, 
+      GetIsFollowerStatusResponse 
+    >(request, "/following/status");
+
+    // Handle errors
+    if (response.success) {
+      if (response.followStatus == null) {
+        throw new Error("Could not determine status");
+      } else {
+        return response.followStatus;
+      }
+    } else {
       console.error(response);
       throw new Error(response.message || "Unknown error");
     }
