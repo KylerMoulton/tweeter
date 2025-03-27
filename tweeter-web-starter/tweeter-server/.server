@@ -7,4 +7,4 @@ tweeterGetFeed | lambda/status/GetFeedLambda.handler
 tweeterGetStory | lambda/status/GetStoryLambda.handler
 tweeterPostStatus | lambda/status/PostStatusLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:471112879218:layer:tweeterserverscriptsdependencies:11'
+LAMBDALAYER_ARN='arn:aws:lambda:us-east-1:471112879218:layer:tweeterserverscriptsdependencies:12'
