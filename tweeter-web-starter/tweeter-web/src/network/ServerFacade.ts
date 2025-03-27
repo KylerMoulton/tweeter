@@ -184,4 +184,25 @@ export class ServerFacade {
       throw new Error(response.message || "Unknown error");
     }
   }
+
+  public async getFollowerCount(
+    request: FollowCountRequest
+  ): Promise<number> {
+    const response = await this.clientCommunicator.doPost< 
+      FollowCountRequest, 
+      FollowCountResponse 
+    >(request, "/followers/count");
+
+    // Handle errors
+    if (response.success) {
+      if (response.count == null) {
+        throw new Error("Could not load number of followers");
+      } else {
+        return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
 }
