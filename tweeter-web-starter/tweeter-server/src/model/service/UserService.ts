@@ -28,16 +28,16 @@ export class UserService {
   };
 
   public async follow (
-    authToken: AuthToken,
-    userToFollow: User
+    token: string,
+    userToFollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
     // Pause so we can see the follow message. Remove when connected to the server
     await new Promise((f) => setTimeout(f, 2000));
 
     // TODO: Call the server
 
-    const followerCount = await this.getFollowerCount(authToken.token, userToFollow);
-    const followeeCount = await this.getFolloweeCount(authToken.token, userToFollow);
+    const followerCount = await this.getFollowerCount(token, userToFollow);
+    const followeeCount = await this.getFolloweeCount(token, userToFollow);
 
     return [followerCount, followeeCount];
   };
