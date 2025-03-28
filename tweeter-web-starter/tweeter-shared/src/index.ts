@@ -20,6 +20,7 @@ export type { AuthTokenDto } from "./model/dto/AuthTokenDto"
 //
 // Requests
 //
+export type { RegisterRequest } from "./model/net/request/RegisterRequest"
 export type { LoginRequest } from "./model/net/request/LoginRequest"
 export type { FollowStateRequest } from "./model/net/request/FollowStateRequest"
 export type { FollowCountRequest } from "./model/net/request/FollowCountRequest"
