@@ -28,11 +28,13 @@ export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollow
 export type { PostStatusRequest } from "./model/net/request/PostStatusRequest"
 export type { PagedStatusItemRequest } from "./model/net/request/PagedStatusItemRequest"
 export type { PagedUserItemRequest } from "./model/net/request/PagedUserItemRequest"
+export type { TweeterUserAliasRequest } from "./model/net/request/TweeterRequest"
 export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 
 //
 // Responses
 //
+export type { GetUserResponse } from "./model/net/response/GetUserResponse"
 export type { LoginRegisterResponse } from "./model/net/response/LoginRegisterResponse"
 export type { FollowStateResponse } from "./model/net/response/FollowStateResponse"
 export type { FollowCountResponse } from "./model/net/response/FollowCountResponse"
