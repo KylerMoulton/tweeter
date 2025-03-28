@@ -15,10 +15,12 @@ export { AuthToken } from "./model/domain/AuthToken";
 //
 export type { UserDto } from "./model/dto/UserDto";
 export type { StatusDto } from "./model/dto/StatusDto"
+export type { AuthTokenDto } from "./model/dto/AuthTokenDto"
 
 //
 // Requests
 //
+export type { LoginRequest } from "./model/net/request/LoginRequest"
 export type { FollowStateRequest } from "./model/net/request/FollowStateRequest"
 export type { FollowCountRequest } from "./model/net/request/FollowCountRequest"
 export type { GetIsFollowerStatusRequest } from "./model/net/request/GetIsFollowerStatusRequest"
@@ -30,6 +32,7 @@ export type { TweeterRequest } from "./model/net/request/TweeterRequest";
 //
 // Responses
 //
+export type { LoginRegisterResponse } from "./model/net/response/LoginRegisterResponse"
 export type { FollowStateResponse } from "./model/net/response/FollowStateResponse"
 export type { FollowCountResponse } from "./model/net/response/FollowCountResponse"
 export type { GetIsFollowerStatusResponse } from "./model/net/response/GetIsFollowerStatusResponse"
