@@ -228,4 +228,25 @@ export class ServerFacade {
       throw new Error(response.message || "Unknown error");
     }
   }
+
+  public async Unfollow(
+    request: FollowStateRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost< 
+      FollowStateRequest, 
+      FollowStateResponse 
+    >(request, "/unfollow");
+
+    // Handle errors
+    if (response.success) {
+      if (response.followeeCount == null || response.followerCount == null) {
+        throw new Error("Could not unfollow user");
+      } else {
+        return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
 }
