@@ -14,6 +14,7 @@ import {
   PagedUserItemResponse,
   PostStatusRequest,
   PostStatusResponse,
+  RegisterRequest,
   Status,
   User,
   UserDto,
@@ -265,6 +266,27 @@ export class ServerFacade {
     if (response.success) {
       if (response.user == null || response.authToken == null) {
         throw new Error("Could not login");
+      } else {
+        return [User.fromDto(response.user) as User, AuthToken.fromDto(response.authToken) as AuthToken];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async Register(
+    request: RegisterRequest
+  ): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost< 
+    RegisterRequest, 
+      LoginRegisterResponse 
+    >(request, "/register");
+
+    // Handle errors
+    if (response.success) {
+      if (response.user == null || response.authToken == null) {
+        throw new Error("Could not register");
       } else {
         return [User.fromDto(response.user) as User, AuthToken.fromDto(response.authToken) as AuthToken];
       }
