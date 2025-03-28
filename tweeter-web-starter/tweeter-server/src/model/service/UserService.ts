@@ -61,8 +61,16 @@ export class UserService {
     if (user === null) {
       throw new Error("Invalid alias or password");
     }
+    
+    const authToken = FakeData.instance.authToken
 
-    return [user.dto, FakeData.instance.authToken.dto];
+    if (authToken === null) {
+        throw new Error("Authtoken is null");
+    }
+
+    console.log(authToken)
+
+    return [user.dto, authToken.dto];
   };
 
   public async register (
@@ -70,7 +78,7 @@ export class UserService {
     lastName: string,
     alias: string,
     password: string,
-    userImageBytes: Uint8Array,
+    userImageBytes: string,
     imageFileExtension: string
   ): Promise<[UserDto, AuthTokenDto]> {
     // Not neded now, but will be needed when you make the request to the server in milestone 3

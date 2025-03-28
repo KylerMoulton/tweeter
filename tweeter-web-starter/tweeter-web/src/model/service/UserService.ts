@@ -94,7 +94,7 @@ export class UserService {
         lastName: lastName,
         alias: alias,
         password: password,
-        userImageBytes: userImageBytes,
+        userImageBytes: Buffer.from(userImageBytes).toString("base64"),
         imageFileExtension: imageFileExtension
     }
     return await this.serverFacade.Register(request);
