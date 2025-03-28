@@ -16,6 +16,8 @@ import {
   PostStatusResponse,
   RegisterRequest,
   Status,
+  TweeterRequest,
+  TweeterResponse,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -291,6 +293,20 @@ export class ServerFacade {
         return [User.fromDto(response.user) as User, AuthToken.fromDto(response.authToken) as AuthToken];
       }
     } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async Logout(
+    request: TweeterRequest
+  ) {
+    const response = await this.clientCommunicator.doPost< 
+      TweeterRequest, 
+      TweeterResponse 
+    >(request, "/logout");
+
+    if (!response.success) {
       console.error(response);
       throw new Error(response.message || "Unknown error");
     }
