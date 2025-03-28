@@ -1,10 +1,13 @@
 import {
+    AuthToken,
     FollowCountRequest,
     FollowCountResponse,
     FollowStateRequest,
     FollowStateResponse,
     GetIsFollowerStatusRequest,
     GetIsFollowerStatusResponse,
+    LoginRegisterResponse,
+    LoginRequest,
     PagedStatusItemRequest,
   PagedStatusItemResponse,
   PagedUserItemRequest,
@@ -243,6 +246,27 @@ export class ServerFacade {
         throw new Error("Could not unfollow user");
       } else {
         return [response.followerCount, response.followeeCount];
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async Login(
+    request: LoginRequest
+  ): Promise<[User, AuthToken]> {
+    const response = await this.clientCommunicator.doPost< 
+      LoginRequest, 
+      LoginRegisterResponse 
+    >(request, "/login");
+
+    // Handle errors
+    if (response.success) {
+      if (response.user == null || response.authToken == null) {
+        throw new Error("Could not login");
+      } else {
+        return [User.fromDto(response.user) as User, AuthToken.fromDto(response.authToken) as AuthToken];
       }
     } else {
       console.error(response);
