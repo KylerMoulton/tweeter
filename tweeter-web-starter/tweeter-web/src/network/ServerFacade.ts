@@ -1,6 +1,8 @@
 import {
     FollowCountRequest,
     FollowCountResponse,
+    FollowStateRequest,
+    FollowStateResponse,
     GetIsFollowerStatusRequest,
     GetIsFollowerStatusResponse,
     PagedStatusItemRequest,
@@ -199,6 +201,27 @@ export class ServerFacade {
         throw new Error("Could not load number of followers");
       } else {
         return response.count;
+      }
+    } else {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async Follow(
+    request: FollowStateRequest
+  ): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost< 
+      FollowStateRequest, 
+      FollowStateResponse 
+    >(request, "/follow");
+
+    // Handle errors
+    if (response.success) {
+      if (response.followeeCount == null || response.followerCount == null) {
+        throw new Error("Could not follow user");
+      } else {
+        return [response.followerCount, response.followeeCount];
       }
     } else {
       console.error(response);
