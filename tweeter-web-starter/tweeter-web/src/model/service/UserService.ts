@@ -1,5 +1,5 @@
 import { Buffer } from "buffer";
-import { AuthToken, User, FakeData, GetIsFollowerStatusRequest, FollowCountRequest, FollowStateRequest, LoginRequest, RegisterRequest, TweeterRequest } from "tweeter-shared";
+import { AuthToken, User, FakeData, GetIsFollowerStatusRequest, FollowCountRequest, FollowStateRequest, LoginRequest, RegisterRequest, TweeterRequest, TweeterUserAliasRequest } from "tweeter-shared";
 import { ServerFacade } from "../../network/ServerFacade";
 
 export class UserService {
@@ -111,7 +111,10 @@ export class UserService {
     authToken: AuthToken,
     alias: string
   ): Promise<User | null> {
-    // TODO: Replace with the result of calling the server
-    return FakeData.instance.findUserByAlias(alias);
+    const request: TweeterUserAliasRequest = {
+        token: authToken.token,
+        userAlias: alias
+    }
+    return await this.serverFacade.GetUser(request)
   };
 }

@@ -6,6 +6,7 @@ import {
     FollowStateResponse,
     GetIsFollowerStatusRequest,
     GetIsFollowerStatusResponse,
+    GetUserResponse,
     LoginRegisterResponse,
     LoginRequest,
     PagedStatusItemRequest,
@@ -18,6 +19,7 @@ import {
   Status,
   TweeterRequest,
   TweeterResponse,
+  TweeterUserAliasRequest,
   User,
   UserDto,
 } from "tweeter-shared";
@@ -307,6 +309,27 @@ export class ServerFacade {
     >(request, "/logout");
 
     if (!response.success) {
+      console.error(response);
+      throw new Error(response.message || "Unknown error");
+    }
+  }
+
+  public async GetUser(
+    request: TweeterUserAliasRequest
+  ): Promise<User> {
+    const response = await this.clientCommunicator.doPost< 
+    TweeterUserAliasRequest, 
+      GetUserResponse 
+    >(request, "/getuser");
+
+    // Handle errors
+    if (response.success) {
+      if (response.user == null) {
+        throw new Error("Could not get user");
+      } else {
+        return User.fromDto(response.user) as User;
+      }
+    } else {
       console.error(response);
       throw new Error(response.message || "Unknown error");
     }
