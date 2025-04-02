@@ -3,13 +3,16 @@ import { AuthToken, User, FakeData, UserDto, AuthTokenDto } from "tweeter-shared
 import bcrypt from "bcryptjs";
 import { DAOFactory } from "../../factory/DAOFactory"
 import { UserDAO } from "../../dao/UserDAO";
+import { AuthTokenDAO } from "../../dao/AuthTokenDAO";
 
 
 export class UserService {
     private readonly userDAO: UserDAO;
+    private readonly authTokenDAO: AuthTokenDAO;
     
     constructor() {
-        this.userDAO = DAOFactory.getDynamoUserDAO();  // ✅ Using factory
+        this.userDAO = DAOFactory.getDynamoUserDAO();
+        this.authTokenDAO = DAOFactory.getDynamoAuthTokenDAO();
     }
 
   public async getIsFollowerStatus (
@@ -69,16 +72,12 @@ export class UserService {
 
     const user = await this.userDAO.login(alias, password)
     if (user === null) {
-      throw new Error(`Invalid alias or password ${alias} ${password}`);
+      throw new Error(`Invalid alias or password`);
     }
     
-    const authToken = FakeData.instance.authToken
+    const authToken = await this.authTokenDAO.create();
 
-    if (authToken === null) {
-        throw new Error("Authtoken is null");
-    }
-
-    return [user, authToken.dto];
+    return [user, authToken];
   };
 
   public async register(
@@ -93,13 +92,13 @@ export class UserService {
     const hashedPassword = await bcrypt.hash(password, 5);
     
     const user =  await this.userDAO.register(firstName, lastName, alias, hashedPassword, imageBytes, imageFileExtension);
+    const authToken = await this.authTokenDAO.create();
 
-    return [user, AuthToken.Generate()]
+    return [user, authToken]
 }
 
   public async logout (token: string): Promise<void> {
-    // Pause so we can see the logging out message. Delete when the call to the server is implemented.
-    await new Promise((res) => setTimeout(res, 1000));
+    await this.authTokenDAO.delete(token)
   };
 
   public async getUser (
