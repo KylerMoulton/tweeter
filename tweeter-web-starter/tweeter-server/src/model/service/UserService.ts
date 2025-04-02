@@ -1,7 +1,17 @@
 import { Buffer } from "buffer";
 import { AuthToken, User, FakeData, UserDto, AuthTokenDto } from "tweeter-shared";
+import bcrypt from "bcryptjs";
+import { DAOFactory } from "../../factory/DAOFactory"
+import { UserDAO } from "../../dao/UserDAO";
+
 
 export class UserService {
+    private readonly userDAO: UserDAO;
+    
+    constructor() {
+        this.userDAO = DAOFactory.getDynamoUserDAO();  // ✅ Using factory
+    }
+
   public async getIsFollowerStatus (
     token: string,
     user: UserDto,
@@ -55,11 +65,11 @@ export class UserService {
     alias: string,
     password: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
+    // const hashedPassword = await bcrypt.hash(password, 5);
 
+    const user = await this.userDAO.login(alias, password)
     if (user === null) {
-      throw new Error("Invalid alias or password");
+      throw new Error(`Invalid alias or password ${alias} ${password}`);
     }
     
     const authToken = FakeData.instance.authToken
@@ -68,32 +78,24 @@ export class UserService {
         throw new Error("Authtoken is null");
     }
 
-    console.log(authToken)
-
-    return [user.dto, authToken.dto];
+    return [user, authToken.dto];
   };
 
-  public async register (
+  public async register(
     firstName: string,
     lastName: string,
     alias: string,
     password: string,
     userImageBytes: string,
     imageFileExtension: string
-  ): Promise<[UserDto, AuthTokenDto]> {
-    // Not neded now, but will be needed when you make the request to the server in milestone 3
-    const imageStringBase64: string =
-      Buffer.from(userImageBytes).toString("base64");
+): Promise<[UserDto, AuthTokenDto]> {
+    const imageBytes: Uint8Array = Buffer.from(userImageBytes, "base64")
+    const hashedPassword = await bcrypt.hash(password, 5);
+    
+    const user =  await this.userDAO.register(firstName, lastName, alias, hashedPassword, imageBytes, imageFileExtension);
 
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.firstUser;
-
-    if (user === null) {
-      throw new Error("Invalid registration");
-    }
-
-    return [user.dto, FakeData.instance.authToken.dto];
-  };
+    return [user, AuthToken.Generate()]
+}
 
   public async logout (token: string): Promise<void> {
     // Pause so we can see the logging out message. Delete when the call to the server is implemented.
