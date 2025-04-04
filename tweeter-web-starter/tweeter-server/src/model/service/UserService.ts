@@ -23,8 +23,8 @@ export class UserService {
     user: UserDto,
     selectedUser: UserDto
   ): Promise<boolean> {
-    // TODO: Replace with the result of calling server
-    return FakeData.instance.isFollower();
+    await this.authTokenDAO.validate(token)
+    return await this.followDAO.GetIsFollowerStatus(user.alias, selectedUser.alias)
   };
 
   public async getFolloweeCount (
@@ -57,20 +57,16 @@ export class UserService {
     token: string,
     userToUnfollow: UserDto
   ): Promise<[followerCount: number, followeeCount: number]> {
-    // Pause so we can see the unfollow message. Remove when connected to the server
-    await new Promise((f) => setTimeout(f, 2000));
-
-    // TODO: Call the server
-
-    return await this.getCounts(token, userToUnfollow.alias);
+    await this.authTokenDAO.validate(token)
+    const userAlias = await this.authTokenDAO.getUserAliasFromToken(token)
+    await this.followDAO.Unfollow(userAlias, userToUnfollow.alias)
+    return await this.getCounts(token, userAlias);
   };
 
   public async login (
     alias: string,
     password: string
   ): Promise<[UserDto, AuthTokenDto]> {
-    // const hashedPassword = await bcrypt.hash(password, 5);
-
     const user = await this.userDAO.login(alias, password)
     if (user === null) {
       throw new Error(`Invalid alias or password`);
