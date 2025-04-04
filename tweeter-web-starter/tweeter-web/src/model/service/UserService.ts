@@ -29,7 +29,7 @@ export class UserService {
   ): Promise<number> {
     const request: FollowCountRequest = {
         token: authToken.token,
-        user: user.dto
+        userAlias: user.alias
     }
     return this.serverFacade.getFolloweeCount(request);
   };
@@ -40,7 +40,7 @@ export class UserService {
   ): Promise<number> {
     const request: FollowCountRequest = {
         token: authToken.token,
-        user: user.dto
+        userAlias: user.alias
     }
     return this.serverFacade.getFollowerCount(request);
   };

@@ -3,7 +3,7 @@ import { UserService } from "../../model/service/UserService";
 
 export const handler = async (request: FollowCountRequest): Promise<FollowCountResponse> => {
     const userService = new UserService();
-    const count = await userService.getFolloweeCount(request.token, request.user)
+    const count = await userService.getFolloweeCount(request.token, request.userAlias)
 
     return {
         success: true,
