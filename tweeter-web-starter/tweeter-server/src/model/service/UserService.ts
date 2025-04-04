@@ -106,9 +106,8 @@ export class UserService {
     token: string,
     alias: string
   ): Promise<UserDto | null> {
-    // TODO: Replace with the result of calling the server
-    const user = FakeData.instance.findUserByAlias(alias);
-    return user ? user.dto : null;
+    await this.authTokenDAO.validate(token)
+    return await this.userDAO.getUser(alias)
   };
 
   public async getCounts(token: string, userAlias: string): Promise<[followerCount: number, followeeCount: number]> {

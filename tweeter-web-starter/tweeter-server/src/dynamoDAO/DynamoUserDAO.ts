@@ -17,12 +17,16 @@ export class DynamoUserDAO implements UserDAO {
     private readonly s3 = new S3Client();
 
     async getUser(alias: string): Promise<UserDto | null> {
+        const sanitizedAlias = alias.startsWith("@") ? alias.slice(1) : alias;
         const command = new GetCommand({
             TableName: this.tableName,
-            Key: { alias: alias }
+            Key: { alias: sanitizedAlias }
         });
 
         const result = await this.client.send(command);
+        if (!result.Item) {
+            throw new Error(`The getUser request failed, looking for ${sanitizedAlias}, got ${result.Item}`)
+        }
         return result.Item as UserDto || null;
     }
 
