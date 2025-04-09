@@ -47,13 +47,14 @@ export class DynamoUserDAO implements UserDAO {
             imageUrl
         };
 
-        await this.client.send(new PutCommand({
-            TableName: this.tableName,
-            Item: {firstName, lastName, alias, imageUrl, password}
-
-        }));
-
-
+        try {
+            await this.client.send(new PutCommand({
+                TableName: this.tableName,
+                Item: { firstName, lastName, alias, imageUrl, password }
+            }));
+        } catch (error) {
+            throw new Error("[Bad Request] User already exists");
+        }
         return user;
     }
 
@@ -66,11 +67,10 @@ export class DynamoUserDAO implements UserDAO {
         const result = await this.client.send(command);
         const item = result.Item;
         if (!item || !item.password) {
-            throw new Error(`Item ${item} is null or password ${item?.password} is null`)
-            return null
+            throw new Error(`[Bad Request] Invalid alias or password`)
         }
         if (!(await bcrypt.compare(password, item.password))) {
-            throw new Error(`Password ${password} does not match data base password ${item.password}`)
+            throw new Error(`[Bad Request] Invalid alias or password`)
         }
         
         const { firstName, lastName, imageUrl } = item;

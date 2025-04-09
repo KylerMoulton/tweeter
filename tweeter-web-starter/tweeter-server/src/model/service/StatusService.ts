@@ -50,10 +50,4 @@ export class StatusService {
     await this.statusDAO.updateStory(newStatus.user.alias, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
     await this.statusDAO.updateFeed(followers, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
   };
-
-private async getFakeData(lastItem: StatusDto | null, pageSize: number): Promise<[StatusDto[], boolean]> {
-    const [items, hasMore] = FakeData.instance.getPageOfStatuses(Status.fromDto(lastItem), pageSize);
-    const dtos = items.map((status) => status.dto);
-    return [dtos, hasMore];
-}
 }

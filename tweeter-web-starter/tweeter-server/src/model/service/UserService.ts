@@ -69,7 +69,7 @@ export class UserService {
   ): Promise<[UserDto, AuthTokenDto]> {
     const user = await this.userDAO.login(alias, password)
     if (user === null) {
-      throw new Error(`Invalid alias or password`);
+      throw new Error(`[Bad Request] Invalid alias or password`);
     }
     
     const authToken = await this.authTokenDAO.create(alias);
@@ -90,6 +90,10 @@ export class UserService {
     
     const user =  await this.userDAO.register(firstName, lastName, alias, hashedPassword, imageBytes, imageFileExtension);
     const authToken = await this.authTokenDAO.create(alias);
+
+    if (user === null) {
+        throw new Error(`[Bad Request] Unable to register new user, please check entered information`);
+    }
 
     return [user, authToken]
 }
