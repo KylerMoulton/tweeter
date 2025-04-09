@@ -1,5 +1,6 @@
 import { UserDAO } from "../dao/UserDAO";
 import {
+    BatchGetCommand,
     DynamoDBDocumentClient,
     GetCommand,
     PutCommand
@@ -85,5 +86,26 @@ export class DynamoUserDAO implements UserDAO {
             ContentType: `image/${imageFileExtension}`
         }));
         return `https://tweeterimageskyler.s3.us-east-1.amazonaws.com/${key}`
+    }
+
+    async LoadMoreUsers(usersAliasToLoad: string[]): Promise<UserDto[]> {
+        if (usersAliasToLoad.length === 0) return [];
+    
+        const keys = usersAliasToLoad.map(alias => ({ alias }));
+    
+        const result = await this.client.send(new BatchGetCommand({
+            RequestItems: {
+                [this.tableName]: {
+                    Keys: keys
+                }
+            }
+        }));
+    
+        const users = result.Responses?.[this.tableName] || [];
+    
+        return users.map(user => {
+            const { firstName, lastName, alias, imageUrl } = user;
+            return { firstName, lastName, alias, imageUrl } as UserDto;
+        });
     }
 }

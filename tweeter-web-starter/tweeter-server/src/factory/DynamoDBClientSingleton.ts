@@ -6,8 +6,15 @@ export class DynamoDBClientSingleton {
 
     public static getClient(): DynamoDBDocumentClient {
         if (!this.client) {
-            this.client = DynamoDBDocumentClient.from(new DynamoDBClient());
+            const baseClient = new DynamoDBClient();
+
+            this.client = DynamoDBDocumentClient.from(baseClient, {
+                marshallOptions: {
+                    removeUndefinedValues: true
+                }
+            });
         }
+
         return this.client;
     }
 }

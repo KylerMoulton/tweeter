@@ -16,4 +16,5 @@ export interface UserDAO {
         alias: string,
         password: string
     ): Promise<UserDto | null>;
+    LoadMoreUsers(usersAliasToLoad: string[]): Promise<UserDto[]>
   }

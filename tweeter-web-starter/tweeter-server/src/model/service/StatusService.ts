@@ -2,13 +2,16 @@ import { Status, FakeData, AuthToken, StatusDto } from "tweeter-shared";
 import { AuthTokenDAO } from "../../dao/AuthTokenDAO";
 import { DAOFactory } from "../../factory/DAOFactory";
 import { StatusDAO } from "../../dao/StatusDAO";
+import { FollowDAO } from "../../dao/FollowDAO";
 
 export class StatusService {
     private readonly statusDAO: StatusDAO;
+    private readonly followDAO: FollowDAO;
     private readonly authTokenDAO: AuthTokenDAO;
 
     constructor() {
         this.statusDAO = DAOFactory.getDynamoStatusDAO();
+        this.followDAO = DAOFactory.getDynamoFollowDAO()
         this.authTokenDAO = DAOFactory.getDynamoAuthTokenDAO();
     }
   public async loadMoreFeedItems (
@@ -17,8 +20,8 @@ export class StatusService {
     pageSize: number,
     lastItem: StatusDto | null
   ): Promise<[StatusDto[], boolean]> {
-    // TODO: Replace with the result of calling server
-    return this.getFakeData(lastItem, pageSize);
+    !await this.authTokenDAO.validate(token)
+    return await this.statusDAO.getFeedStatus(userAlias, pageSize, lastItem)
   };
 
   public async loadMoreStoryItems (
@@ -35,13 +38,17 @@ export class StatusService {
     token: string,
     newStatus: StatusDto
   ): Promise<void> {
-    const followers = null
-    // authenticate the authtoken
+    const followers = await this.followDAO.LoadAllFollowers(newStatus.user.alias)
+    if (newStatus == null) {
+        throw new Error(`[Bad Request] Request must have a post value`)
+    } else if (token == null) {
+        throw new Error(`[Bad Request] Must have an authtoken`)
+    }
     if (!await this.authTokenDAO.validate(token)) {
         await this.authTokenDAO.delete(token)
     }
-    this.statusDAO.updateStory(newStatus.user.alias, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
-    // this.statusDAO.updateFeed(followers, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
+    await this.statusDAO.updateStory(newStatus.user.alias, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
+    await this.statusDAO.updateFeed(followers, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
   };
 
 private async getFakeData(lastItem: StatusDto | null, pageSize: number): Promise<[StatusDto[], boolean]> {
