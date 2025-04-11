@@ -113,7 +113,7 @@ const UserInfo = (props: Props) => {
               <h2>
                 <b>{displayedUser.name}</b>
               </h2>
-              <h3>{displayedUser.alias}</h3>
+              <h3>{`@${displayedUser.alias}`}</h3>
               <br />
               {followeeCount > -1 && followerCount > -1 && (
                 <div>
