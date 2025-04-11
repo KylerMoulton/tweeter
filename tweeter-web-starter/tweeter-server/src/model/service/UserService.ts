@@ -50,7 +50,7 @@ export class UserService {
     await this.authTokenDAO.validate(token)
     const userAlias = await this.authTokenDAO.getUserAliasFromToken(token)
     await this.followDAO.Follow(userAlias, userToFollow.alias)
-    return await this.getCounts(token, userAlias);
+    return await this.getCounts(token, userToFollow.alias);
   };
 
   public async unfollow (
@@ -60,7 +60,7 @@ export class UserService {
     await this.authTokenDAO.validate(token)
     const userAlias = await this.authTokenDAO.getUserAliasFromToken(token)
     await this.followDAO.Unfollow(userAlias, userToUnfollow.alias)
-    return await this.getCounts(token, userAlias);
+    return await this.getCounts(token, userToUnfollow.alias);
   };
 
   public async login (
