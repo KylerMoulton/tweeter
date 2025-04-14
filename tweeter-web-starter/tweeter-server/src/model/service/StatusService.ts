@@ -3,6 +3,7 @@ import { AuthTokenDAO } from "../../dao/AuthTokenDAO";
 import { DAOFactory } from "../../factory/DAOFactory";
 import { StatusDAO } from "../../dao/StatusDAO";
 import { FollowDAO } from "../../dao/FollowDAO";
+import { sendToQueue } from "../../util/SqsService"
 
 export class StatusService {
     private readonly statusDAO: StatusDAO;
@@ -48,6 +49,6 @@ export class StatusService {
         await this.authTokenDAO.delete(token)
     }
     await this.statusDAO.updateStory(newStatus.user.alias, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
-    await this.statusDAO.updateFeed(followers, newStatus.post, newStatus.user, newStatus.timestamp, newStatus.segments)
+    await sendToQueue('https://sqs.us-east-1.amazonaws.com/471112879218/FanOutQueue', {authorAlias : newStatus.user.alias, newStatus: newStatus})
   };
 }

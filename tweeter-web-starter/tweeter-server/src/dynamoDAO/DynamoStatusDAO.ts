@@ -146,7 +146,7 @@ export class DynamoStatusDAO implements StatusDAO {
 
 		if (lastItem) {
 			params.ExclusiveStartKey = {
-				alias: lastItem.user.alias,
+				alias: alias,
 				timestamp: lastItem.timestamp,
 			};
 		}
