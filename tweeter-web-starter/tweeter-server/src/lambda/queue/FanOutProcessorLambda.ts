@@ -17,7 +17,7 @@ export const handler = async function (event: any) {
     const { authorAlias, newStatus } = JSON.parse(record.body);
 
     const followers = await followDAO.LoadAllFollowers(authorAlias);
-    const batches = chunkArray(followers, 25);
+    const batches = chunkArray(followers, 150);
 
     for (const batch of batches) {
       const message = {
